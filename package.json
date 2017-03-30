@@ -6,8 +6,8 @@
   "scripts": {
     "start": "static -p 8080 -c 0",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack src/index.js  docs/bundle.js -p",
-    "build:w": "webpack src/index.js  docs/bundle.js -w",
+    "build": "webpack  -p",
+    "build:w": "webpack  -w",
     "watch": "npm run build:w",
     "deploy": "npm run build"
   },
