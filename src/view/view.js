@@ -6,18 +6,17 @@ module.exports = video => {
 
   const center = { x: Math.floor(width/2), y: Math.floor(height/2) };
 
-  gui.renderTri(center.x, center.y);
-  gui.fillRect(center.x - 170, center.y + 70, 100, 60);
-
   const buffer = new BufferCanvas(width, height);
   setInterval(() => {
     buffer.update(video);
 
-    const borderWidth = 3;
-    const picked = buffer.getColor(center.x - 1, center.y - 1, 3, 3);
-    console.log(picked);
-    gui.fillRect(center.x - 170 + borderWidth, center.y + 70 + borderWidth, 100 - borderWidth*2, 60 - borderWidth*2, `rgb(${picked.r}, ${picked.g}, ${picked.b})`);
+    gui.renderTri(center.x, center.y);
+    gui.fillRect(center.x - 170, center.y + 70, 100, 80);
 
+    const picked = buffer.getColor(center.x - 1, center.y - 1, 3, 3);
+    const color = `rgb(${picked.r}, ${picked.g}, ${picked.b})`;
+    gui.fillRect(center.x - 170 + 3, center.y + 70 + 3, 100 - 6, 60 - 6, color);
+    gui.fillText(color, center.x - 170 + 3, center.y + 130 + 3, 100 - 6);
   }, 100);
 
 };
@@ -88,6 +87,7 @@ class Canvas {
   }
 
   renderTri(centerX, centerY) {
+    this.ctx.fillStyle = 'rgb(0, 0, 0)';
     this.ctx.beginPath();
     this.ctx.moveTo(centerX, centerY);
     this.ctx.lineTo(centerX - 70, centerY + 80);
@@ -95,5 +95,11 @@ class Canvas {
     this.ctx.lineTo(centerX, centerY);
     this.ctx.closePath();
     this.ctx.fill();
+  }
+
+  fillText(text, x, y, len) {
+    this.ctx.fillStyle = 'rgb(255, 255, 255)';
+    this.ctx.textBaseline = 'top';
+    this.ctx.fillText(text, x, y, len);
   }
 }
