@@ -70,17 +70,20 @@
 /* 0 */
 /***/ (function(module, exports) {
 
-const p = navigator.mediaDevices.getUserMedia({ audio: false, video: true });
-p.then((stream) => {
+const p = navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1280, height: 720 } });
+p.then(stream => {
   const video = document.querySelector('video');
+  var canvas = document.querySelector('canvas');
+  var ctx = canvas.getContext('2d');
   video.src = window.URL.createObjectURL(stream);
-  video.addEventListener('loadedmetadata', e => {
-    console.log(e);
-    video.play();
-  });
-});
-p.catch(function (e) { console.log(e.name); }); // always check for errors at the end.
 
+  setInterval(() => {
+    ctx.getImageData(0, 0, 1280, 720);
+    ctx.drawImage(video, 0, 0);
+    // document.querySelector('img').src = canvas.toDataURL('image/webp');
+  }, 100);
+});
+p.catch(e => console.log(e.name));
 
 
 /***/ })
