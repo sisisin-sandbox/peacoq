@@ -1,3 +1,5 @@
+const {Canvas} = require('./view/canvas');
+
 const p = navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1280, height: 720 } });
 p.then(stream => {
   const video = document.querySelector('.camera');
@@ -14,9 +16,8 @@ function record(video, stream) {
     var ctx = canvas.getContext('2d');
     ctx.getImageData(0, 0, 1280, 720);
     ctx.drawImage(video, 0, 0);
-
     canvas.toBlob(blob => {
-      fetchFaceApi(blob);
+      fetchFaceApi(blob, new Canvas(ctx));
     });
   });
 };
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 })
 
-function fetchFaceApi(imageBlob) {
+function fetchFaceApi(imageBlob, canvas) {
   window.headers = new Headers();
   headers.append('Ocp-Apim-Subscription-Key', document.querySelector('.api-key').value);
   headers.append('Content-Type', 'application/octet-stream');
@@ -38,5 +39,19 @@ function fetchFaceApi(imageBlob) {
     .then(res => res.json())
     .then(body => {
       console.log(body);
+      document.querySelector('canvas').style.display = 'block';
+      body.forEach(b => {
+        const faceRectangle = b.faceRectangle;
+        const {age, gender} = b.faceAttributes;
+        canvas.strokeRect(faceRectangle.left, faceRectangle.top, faceRectangle.width, faceRectangle.height, {r:255,g:255,b:255});
+        const text = {
+          x: faceRectangle.left - 100,
+          y: faceRectangle.top + Math.ceil(faceRectangle.height/2),
+          w: 80,
+          h: 40
+        }
+        canvas.fillRect(text.x, text.y, text.w, text.h, {r:0,g:0,b:0});
+        canvas.fillText(`${gender}:${age}`, text.x, text.y, text.w, "30px 'Times New Roman'");
+      });
     })
 }
