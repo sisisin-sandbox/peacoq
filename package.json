@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"webpack src/index.js  dist/bundle.js -p",
-    "build:w":"webpack src/index.js  dist/bundle.js -w",
+    "build":"webpack src/index.js  docs/bundle.js -p",
+    "build:w":"webpack src/index.js  docs/bundle.js -w",
     "watch":"npm run build:w",
-    "predeploy": "mkdir -p dist && cp -r src/*.html dist/ && npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build"
   },
   "keywords": [],
   "author": "",
