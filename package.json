@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "predeploy": "mkdir -p dist && cp -r src/ dist/",
+    "build":"webpack src/index.js  dist/bundle.js -p",
+    "build:w":"webpack src/index.js  dist/bundle.js -w",
+    "watch":"npm run build:w",
+    "predeploy": "mkdir -p dist && cp -r src/*.html dist/ && npm run build",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "gh-pages": "^0.12.0"
+    "gh-pages": "^0.12.0",
+    "webpack": "^2.3.2"
   }
 }

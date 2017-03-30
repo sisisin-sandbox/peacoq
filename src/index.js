@@ -11,4 +11,3 @@ p.then(function(stream) {
 });
 p.catch(function(e) { console.log(e.name); }); // always check for errors at the end.
 
-console.log('a ')
