@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 2:
+/***/ 3:
 /***/ (function(module, exports) {
 
 const p = navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1280, height: 720 } });
@@ -88,6 +88,9 @@ function record(stream) {
     recorder.start();
     recorder.addEventListener('dataavailable', e => {
       blobUrl = window.URL.createObjectURL(new Blob([e.data], { type: e.data.type }));
+      const anchor = document.querySelector('a');
+      anchor.download = 'recorded';
+      anchor.href = blobUrl;
     });
   });
   document.querySelector('.record-end').addEventListener('click', e => {
