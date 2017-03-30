@@ -85,8 +85,7 @@ module.exports = video => {
     buffer.update(video);
     const picked = buffer.getColor(center.x - 1, center.y - 1, 3, 3);
 
-    const color = `rgb(${picked.r}, ${picked.g}, ${picked.b})`;
-    gui.updateLoupe(color);
+    gui.updateLoupe(picked);
 
   }, 100);
 
@@ -151,9 +150,17 @@ class Gui {
 
   updateLoupe(c) {
     this._fillTri(this.center.x, this.center.y);
-    this.canvas.fillRect(this.center.x - 170, this.center.y + 70, 100, 80);
-    this.canvas.fillRect(this.center.x - 170 + 3, this.center.y + 70 + 3, 100 - 6, 60 - 6, c);
-    this.canvas.fillText(c, this.center.x - 170 + 3, this.center.y + 130 + 3, 100 - 6);
+    this._drawRect(c);
+  }
+
+  _drawRect(c) {
+    const [x, y] = [this.center.x - 170, this.center.y + 70];
+    this.canvas.fillRect(x, y, 100, 130);
+    this.canvas.fillRect(x + 3, y + 3, 100 - 6, 60 - 6, c);
+    this.canvas.fillRect(x + 23, y + 65 + (40 - c.r/(255/40)), 10, c.r/(255/40), {r:255,g:0,b:0});
+    this.canvas.fillRect(x + 48, y + 65 + (40 - c.g/(255/40)), 10, c.g/(255/40), {r:0,g:255,b:0});
+    this.canvas.fillRect(x + 73, y + 65 + (40 - c.b/(255/40)), 10, c.b/(255/40), {r:0,g:0,b:255});
+    this.canvas.fillText(this.canvas.rgb(c), x + 3, this.center.y + 180 + 3, 100 - 6);
   }
 
   _fillTri(centerX, centerY) {
@@ -198,7 +205,7 @@ module.exports.Canvas = class {
   }
 
   fillRect(x, y, w, h, c) {
-    this.ctx.fillStyle = c || 'rgb(0, 0, 0)';
+    this.ctx.fillStyle = c ? this.rgb(c) : this.rgb({r:0, g:0, b:0});
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
     this.ctx.lineTo(x + w, y);
@@ -210,9 +217,13 @@ module.exports.Canvas = class {
   }
 
   fillText(text, x, y, len) {
-    this.ctx.fillStyle = 'rgb(255, 255, 255)';
+    this.ctx.fillStyle = this.rgb({r:255, g:255, b:255});
     this.ctx.textBaseline = 'top';
     this.ctx.fillText(text, x, y, len);
+  }
+
+  rgb(c) {
+    return `rgb(${c.r}, ${c.g}, ${c.b})`;
   }
 }
 

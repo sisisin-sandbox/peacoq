@@ -4,7 +4,7 @@ module.exports.Canvas = class {
   }
 
   fillRect(x, y, w, h, c) {
-    this.ctx.fillStyle = c || 'rgb(0, 0, 0)';
+    this.ctx.fillStyle = c ? this.rgb(c) : this.rgb({r:0, g:0, b:0});
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
     this.ctx.lineTo(x + w, y);
@@ -16,8 +16,12 @@ module.exports.Canvas = class {
   }
 
   fillText(text, x, y, len) {
-    this.ctx.fillStyle = 'rgb(255, 255, 255)';
+    this.ctx.fillStyle = this.rgb({r:255, g:255, b:255});
     this.ctx.textBaseline = 'top';
     this.ctx.fillText(text, x, y, len);
+  }
+
+  rgb(c) {
+    return `rgb(${c.r}, ${c.g}, ${c.b})`;
   }
 }
