@@ -15,6 +15,9 @@ function record(stream) {
     recorder.start();
     recorder.addEventListener('dataavailable', e => {
       blobUrl = window.URL.createObjectURL(new Blob([e.data], { type: e.data.type }));
+      const anchor = document.querySelector('a');
+      anchor.download = 'recorded';
+      anchor.href = blobUrl;
     });
   });
   document.querySelector('.record-end').addEventListener('click', e => {
