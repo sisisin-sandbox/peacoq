@@ -1,3 +1,5 @@
+const {Canvas} = require('./canvas');
+
 module.exports = video => {
 
   const [width, height] = [video.videoWidth, video.videoHeight];
@@ -9,14 +11,11 @@ module.exports = video => {
   const buffer = new BufferCanvas(width, height);
   setInterval(() => {
     buffer.update(video);
-
-    gui.renderTri(center.x, center.y);
-    gui.fillRect(center.x - 170, center.y + 70, 100, 80);
-
     const picked = buffer.getColor(center.x - 1, center.y - 1, 3, 3);
+
     const color = `rgb(${picked.r}, ${picked.g}, ${picked.b})`;
-    gui.fillRect(center.x - 170 + 3, center.y + 70 + 3, 100 - 6, 60 - 6, color);
-    gui.fillText(color, center.x - 170 + 3, center.y + 130 + 3, 100 - 6);
+    gui.updateLoupe(color);
+
   }, 100);
 
 };
@@ -34,7 +33,7 @@ function createGuiCanvas(w, h) {
 
   document.body.appendChild(canvas);
 
-  return new Canvas(canvas.getContext('2d'));
+  return new Gui(new Canvas(canvas.getContext('2d')), w, h);
 }
 
 class BufferCanvas {
@@ -69,24 +68,23 @@ class BufferCanvas {
 
 }
 
-class Canvas {
-  constructor(ctx) {
-    this.ctx = ctx;
+class Gui {
+  constructor(canvas, width, height) {
+    this.center = { x: Math.floor(width/2), y: Math.floor(height/2) };
+    this.width = width;
+    this.height = height;
+    this.canvas = canvas;
+    this.ctx = canvas.ctx;
   }
 
-  fillRect(x, y, w, h, c) {
-    this.ctx.fillStyle = c || 'rgb(0, 0, 0)';
-    this.ctx.beginPath();
-    this.ctx.moveTo(x, y);
-    this.ctx.lineTo(x + w, y);
-    this.ctx.lineTo(x + w, y + h);
-    this.ctx.lineTo(x, y + h);
-    this.ctx.lineTo(x, y);
-    this.ctx.closePath();
-    this.ctx.fill();
+  updateLoupe(c) {
+    this._fillTri(this.center.x, this.center.y);
+    this.canvas.fillRect(this.center.x - 170, this.center.y + 70, 100, 80);
+    this.canvas.fillRect(this.center.x - 170 + 3, this.center.y + 70 + 3, 100 - 6, 60 - 6, c);
+    this.canvas.fillText(c, this.center.x - 170 + 3, this.center.y + 130 + 3, 100 - 6);
   }
 
-  renderTri(centerX, centerY) {
+  _fillTri(centerX, centerY) {
     this.ctx.fillStyle = 'rgb(0, 0, 0)';
     this.ctx.beginPath();
     this.ctx.moveTo(centerX, centerY);
@@ -95,11 +93,5 @@ class Canvas {
     this.ctx.lineTo(centerX, centerY);
     this.ctx.closePath();
     this.ctx.fill();
-  }
-
-  fillText(text, x, y, len) {
-    this.ctx.fillStyle = 'rgb(255, 255, 255)';
-    this.ctx.textBaseline = 'top';
-    this.ctx.fillText(text, x, y, len);
   }
 }
