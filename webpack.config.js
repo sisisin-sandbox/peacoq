@@ -2,6 +2,7 @@ module.exports = {
   entry: {
     index: './src/index.js',
     record: './src/record.js',
+    face: './src/face.js',
   },
   output: {
     filename: './docs/[name].js'
