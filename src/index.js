@@ -6,7 +6,6 @@ p.then(stream => {
   video.src = window.URL.createObjectURL(stream);
 
   video.addEventListener('loadedmetadata', () => {
-    console.log(video.videoHeight)
     view(video);
   });
 });
